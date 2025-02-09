@@ -1,0 +1,81 @@
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Main extends JFrame {
+    private JTextField stepsField;
+    private JTextField distanceField;
+    private JTextField weightField;
+    private JTextField ageField;
+    private JButton trackButton;
+    private JLabel resultLabel;
+
+    public Main()
+    {
+        setTitle("Health and Fitness Tracker");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(400,300);
+        setLayout(new BorderLayout());
+
+        stepsField=new JTextField(10);
+        distanceField=new JTextField(10);
+        weightField=new JTextField(10);
+        ageField=new JTextField(10);
+        trackButton=new JButton("Track");
+        resultLabel=new JLabel();
+
+        trackButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              try{
+                  int steps=Integer.parseInt(stepsField.getText());
+                  double distance=Double.parseDouble(distanceField.getText());
+                  double weight=Double.parseDouble(weightField.getText());
+                 int age=Integer.parseInt(ageField.getText());
+                  double caloriesBurned=calculateCaloriesBurned(steps,distance,weight,age);
+                  resultLabel.setText("Calories Burned:" + String.format("%.2f",caloriesBurned));
+              } catch(NumberFormatException ex) {
+                  resultLabel.setText("please enter valid numbers");
+              }
+        }
+      });
+        JPanel inputPanel=new JPanel(new GridLayout(5,2,5,5));
+        inputPanel.add(new JLabel("Steps taken:"));
+        inputPanel.add(stepsField);
+        inputPanel.add(new JLabel("Distance(km):"));
+        inputPanel.add(distanceField);
+        inputPanel.add(new JLabel("Weight (kg):"));
+        inputPanel.add(weightField);
+        inputPanel.add(new JLabel("Age:"));
+        inputPanel.add(ageField);
+        inputPanel.add(new JLabel());
+        inputPanel.add(trackButton);
+        inputPanel.setBackground(Color.LIGHT_GRAY);
+        JPanel resultPanel=new JPanel();
+        resultPanel.add(resultLabel);
+        resultPanel.setBackground(Color.LIGHT_GRAY);
+        add (inputPanel,BorderLayout.CENTER);
+        add (resultPanel,BorderLayout.SOUTH);
+        inputPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+ resultPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+
+    }
+
+    private double calculateCaloriesBurned(int steps,double distance,double weight,int age)
+         {
+         double caloriesPerStep=0.04;
+         double caloriesPerDistance=0.1;
+         double weightFactor=weight*0.035;
+         double ageFactor= age*0.01;
+         return((steps*caloriesPerStep+distance*caloriesPerDistance)* weightFactor*(1-ageFactor));
+         }
+
+    public static void main(String[] args) {
+         SwingUtilities.invokeLater(new Runnable() {
+                         public void run() {
+                             new Main().setVisible(true);
+         }
+     });
+}
+ }
